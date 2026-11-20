@@ -188,6 +188,37 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .tbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:99px;background:var(--emerald);color:#fff;font-size:12.5px;font-weight:700;flex:none;min-width:84px;justify-content:center}
 .tbtn svg{width:14px;height:14px}
 .tbtn.on{background:var(--bad)}
+.greet{margin:4px 2px 12px}
+.greet .hi{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.greet .date{font-size:13px;color:var(--muted);margin-top:2px}
+.stats3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.sc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 8px 12px;text-align:center}
+.ring{--p:0;--col:var(--emerald);width:64px;height:64px;margin:0 auto 8px;border-radius:50%;background:conic-gradient(var(--col) calc(var(--p)*1%),var(--surface2) 0);display:grid;place-items:center}
+.ring b{width:50px;height:50px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:15px;font-weight:800}
+.sc .lb{font-size:12px;font-weight:700}
+.sc .sm{font-size:10.5px;color:var(--muted);margin-top:1px}
+.fire{width:64px;height:64px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(135deg,#ffb347,#e2541b);display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;line-height:1;box-shadow:0 6px 18px rgba(226,84,27,.3)}
+.fire.off{background:var(--surface2);color:var(--muted);box-shadow:none}
+.fire small{display:block;font-size:14px}
+.cont{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,var(--gold-soft),var(--surface));border:1px solid var(--line);margin-bottom:4px}
+.cont .pl{width:46px;height:46px;flex:none;border-radius:50%;background:var(--emerald);color:#fff;display:grid;place-items:center;box-shadow:0 6px 16px rgba(14,138,95,.35)}
+.cont .pl svg{width:18px;height:18px;margin-left:2px}
+.cont .k{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:.05em;text-transform:uppercase}
+.cont b{display:block;font-size:16px}
+.cont small{color:var(--muted);font-size:12.5px}
+.cont .arn{margin-left:auto;font-family:"Amiri Quran",serif;font-size:22px;color:var(--gold)}
+.sech{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:18px 2px 10px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);transition:transform .12s;min-height:132px}
+.tile:active{transform:scale(.97)}
+.tile .ti{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:linear-gradient(135deg,var(--c1),var(--c2));margin-bottom:8px;box-shadow:0 6px 14px rgba(0,0,0,.15)}
+.tile b{font-size:15.5px}
+.tile small{font-size:12px;color:var(--muted);line-height:1.35}
+.tday{display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:18px}
+.tday .ic{width:42px;height:42px;flex:none;border-radius:12px;background:var(--gold-soft);display:grid;place-items:center;font-size:21px}
+.tday b{display:block;font-size:15px;margin-bottom:3px}
+.tday p{margin:0;font-size:13px;line-height:1.55;color:var(--muted)}
+.tday .more{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:700;color:var(--emerald)}
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;z-index:30;box-shadow:var(--shadow);max-width:90vw}
 .ver{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;background:var(--surface2);font-weight:600}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:6px 0 30px;line-height:1.6}
@@ -203,11 +234,26 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
       <div class="brand"><h1>Mudah Hafaz</h1><p>Latihan UTQH SPM</p></div>
       <button class="icon-btn" id="themeBtn" aria-label="Tukar tema"></button>
     </div>
-    <div id="listView">
-    <div class="hero">
-      <div class="ar">وَلَقَدْ يَسَّرْنَا ٱلْقُرْءَانَ لِلذِّكْرِ</div>
-      <div class="t">"Dan sesungguhnya Kami telah mudahkan Al-Quran untuk peringatan" (Al-Qamar: 17)</div>
+    <div id="homeView">
+      <div class="greet"><div class="hi" id="hi">Assalamualaikum 👋</div><div class="date" id="today"></div></div>
+      <div class="hero">
+        <div class="ar">وَلَقَدْ يَسَّرْنَا ٱلْقُرْءَانَ لِلذِّكْرِ</div>
+        <div class="t">"Dan sesungguhnya Kami telah mudahkan Al-Quran untuk peringatan" (Al-Qamar: 17)</div>
+      </div>
+      <div class="stats3" id="stats3"></div>
+      <div id="contWrap"></div>
+      <div class="sech">Menu</div>
+      <div class="tiles">
+        <button class="tile" data-go="tilawah"><span class="ti" style="--c1:#1f9d74;--c2:#0b5a41">📖</span><b>Tilawah</b><small>Baca sambil melihat ayat</small></button>
+        <button class="tile" data-go="hafazan"><span class="ti" style="--c1:#d9a441;--c2:#9a6a12">🧠</span><b>Hafazan</b><small>Uji hafazan, ayat disorok</small></button>
+        <button class="tile" data-go="tips"><span class="ti" style="--c1:#4f8fd6;--c2:#245a9a">💡</span><b>Tips Hafazan</b><small>15 teknik menghafaz</small></button>
+        <button class="tile" data-go="tajwid"><span class="ti" style="--c1:#c2577a;--c2:#7d2445">📜</span><b>Hukum Tajwid</b><small>Dengar contoh tajwid</small></button>
+      </div>
+      <div class="sech">Tip hari ini</div>
+      <div id="tipToday"></div>
     </div>
+    <div id="listView" class="hidden">
+    <div class="phead"><h2 id="listTitle"></h2></div>
     <div class="row"><div class="seg" id="tSeg">
       <button data-v="4" class="on">Tingkatan 4</button>
       <button data-v="5">Tingkatan 5</button>
@@ -226,9 +272,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
     <div class="foot">Alat latihan kendiri. Semakan suara hanya pada peringkat perkataan.<br>Tajwid tetap dinilai oleh guru. Audio: Mahmoud Khalil Al-Husary.<br><span class="ver" id="ver"></span></div>
   </div>
   <nav class="nav" id="nav">
+    <button data-v="home"><span>🏠</span>Utama</button>
     <button data-v="tilawah"><span>📖</span>Tilawah</button>
     <button data-v="hafazan"><span>🧠</span>Hafazan</button>
-    <button data-v="tips"><span>💡</span>Tips Hafazan</button>
+    <button data-v="tips"><span>💡</span>Tips</button>
     <button data-v="tajwid"><span>📜</span>Tajwid</button>
   </nav>
 </section>
@@ -289,8 +336,8 @@ applyTheme(store.get("mh:theme", null));
 $("#themeBtn").onclick = () => { const t = isDark()?"light":"dark"; store.set("mh:theme", t); applyTheme(t); };
 
 /* ---------- home ---------- */
-let tab = store.get("mh:tab", store.get("mh:mode","hafazan")), ting = store.get("mh:ting","4");
-let mode = (tab==="tips"||tab==="tajwid") ? store.get("mh:mode","hafazan") : tab;
+let tab = "home", ting = store.get("mh:ting","4");
+let mode = store.get("mh:mode","hafazan");
 const HINTS = {
   hafazan: "Ayat disorok. Baca dari ingatan dan perkataan akan muncul apabila dibaca dengan betul.",
   tilawah: "Ayat dipaparkan. Baca sambil melihat dan app akan menyemak setiap perkataan."
@@ -333,15 +380,56 @@ function renderTajwid(){
     store.set("mh:tajopen", [...$("#taj").querySelectorAll(".tsec.open")].map(x=>+x.dataset.si)); });
   $("#taj").querySelectorAll(".tbtn").forEach(b=>b.onclick=()=> tajBtn===b ? tajStop() : tajPlay(b));
 }
+/* ---------- home screen ---------- */
+const HARI=["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"], BULAN=["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];
+const dayKey = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function logPractice(){ const days=store.get("mh:days",[]), k=dayKey(new Date()); if(!days.includes(k)){ days.push(k); store.set("mh:days", days.slice(-120)); } }
+function streak(){
+  const days=new Set(store.get("mh:days",[])); let d=new Date(), n=0;
+  if(!days.has(dayKey(d))) d.setDate(d.getDate()-1);
+  while(days.has(dayKey(d))){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function avgBest(m){ const all=[...QDATA[m]["4"],...QDATA[m]["5"]]; const ids=[...new Set(all.map(p=>p.id))];
+  const done=ids.map(id=>store.get(`mh:best:${m}:${id}`,null)); return {pct:Math.round(done.reduce((a,b)=>a+(b||0),0)/ids.length), n:done.filter(x=>x!=null).length, total:ids.length}; }
+function renderDash(){
+  const now=new Date(), h=now.getHours();
+  const waktu = h<12?"Selamat pagi":h<15?"Selamat tengah hari":h<19?"Selamat petang":"Selamat malam";
+  $("#hi").textContent = "Assalamualaikum 👋";
+  $("#today").textContent = `${waktu} · ${HARI[now.getDay()]}, ${now.getDate()} ${BULAN[now.getMonth()]} ${now.getFullYear()}`;
+  const hz=avgBest("hafazan"), tl=avgBest("tilawah"), st=streak();
+  $("#stats3").innerHTML = `
+    <div class="sc"><div class="ring" style="--p:${hz.pct}"><b>${hz.pct}%</b></div><div class="lb">Hafazan</div><div class="sm">${hz.n}/${hz.total} dicuba</div></div>
+    <div class="sc"><div class="ring" style="--p:${tl.pct};--col:var(--gold)"><b>${tl.pct}%</b></div><div class="lb">Tilawah</div><div class="sm">${tl.n}/${tl.total} dicuba</div></div>
+    <div class="sc"><div class="fire${st?"":" off"}">${st?`🔥<small>${st}</small>`:"0"}</div><div class="lb">Hari berturut</div><div class="sm">${st?"Teruskan!":"Mula hari ini"}</div></div>`;
+  const last=store.get("mh:last",null); let lp=null;
+  if(last && QDATA[last.mode] && QDATA[last.mode][last.ting]) lp=QDATA[last.mode][last.ting].find(p=>p.id===last.id);
+  const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+  if(lp){ const best=store.get(`mh:best:${last.mode}:${lp.id}`,null);
+    $("#contWrap").innerHTML = `<button class="cont" id="contBtn"><span class="pl">${PLAY}</span><span><span class="k">Sambung latihan</span><b>${lp.name} ${lp.from}${lp.to!==lp.from?"–"+lp.to:""}</b><small>${last.mode==="hafazan"?"Hafazan":"Tilawah"} · Tingkatan ${last.ting}${best!=null?` · Terbaik ${best}%`:""}</small></span><span class="arn">${lp.ar}</span></button>`;
+    $("#contBtn").onclick = () => { mode=last.mode; ting=last.ting; store.set("mh:ting",ting); store.set("mh:mode",mode); openPassage(lp); };
+  } else {
+    $("#contWrap").innerHTML = `<button class="cont" id="contBtn"><span class="pl">${PLAY}</span><span><span class="k">Mula di sini</span><b>Al-An'am 162–163</b><small>Petikan hafazan pertama · Tingkatan 4</small></span><span class="arn">الأنعام</span></button>`;
+    $("#contBtn").onclick = () => { mode="hafazan"; ting="4"; openPassage(QDATA.hafazan["4"][0]); };
+  }
+  const t=TIPS[Math.floor(Date.now()/864e5)%TIPS.length];
+  $("#tipToday").innerHTML = `<div class="tday"><div class="ic">${t.i}</div><div><b>${t.t}</b><p>${t.d}</p><button class="more" id="moreTips">Lihat semua tips →</button></div></div>`;
+  $("#moreTips").onclick = () => goTab("tips");
+}
+function goTab(v){ if(v===tab) return; stopAudio(); tajStop(); tab=v; if(v==="hafazan"||v==="tilawah") store.set("mh:mode",v); renderHome(); scrollTo(0,0); }
+document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>goTab(b.dataset.go));
 function renderHome(){
   setSeg($("#nav"), tab);
   const isList = tab==="hafazan"||tab==="tilawah";
+  $("#homeView").classList.toggle("hidden", tab!=="home");
   $("#listView").classList.toggle("hidden", !isList);
   $("#tipsView").classList.toggle("hidden", tab!=="tips");
   $("#tajView").classList.toggle("hidden", tab!=="tajwid");
   if(tab==="tips"){ if(!$("#tips").children.length) renderTips(); return; }
   if(tab==="tajwid"){ if(!$("#taj").children.length) renderTajwid(); return; }
+  if(tab==="home"){ renderDash(); return; }
   mode = tab; setSeg($("#tSeg"), ting);
+  $("#listTitle").textContent = mode==="hafazan" ? "🧠 Hafazan" : "📖 Tilawah";
   $("#modeHint").textContent = HINTS[mode];
   const list = QDATA[mode][ting];
   $("#cards").innerHTML = list.map((p,i) => {
@@ -356,7 +444,7 @@ function renderHome(){
   }).join("");
   $("#cards").querySelectorAll(".card").forEach(c => c.onclick = () => openPassage(list[+c.dataset.i]));
 }
-$("#nav").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(!v||v===tab) return; stopAudio(); tajStop(); tab=v; store.set("mh:tab",v); if(v==="hafazan"||v==="tilawah") store.set("mh:mode",v); renderHome(); scrollTo(0,0); };
+$("#nav").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(v) goTab(v); };
 $("#tSeg").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(v){ting=v;store.set("mh:ting",v);renderHome();} };
 
 /* ---------- arabic normalisation & matching ---------- */
@@ -391,6 +479,7 @@ function similar(h, e){
 let P=null, W=[], st=[], pos=0, hiddenMode=true, started=false;
 function openPassage(p){
   P=p; hiddenMode = mode==="hafazan";
+  store.set("mh:last", {mode, ting, id:p.id});
   W=[]; p.ayat.forEach((a,ai)=>a.w.forEach((w,wi)=>W.push({...w, n:norm(w.i), a:a.a, ai, last: wi===a.w.length-1})));
   $("#pTitle").textContent = p.name;
   $("#pSub").textContent = `Ayat ${p.from}${p.to!==p.from?"–"+p.to:""} · Tingkatan ${ting}`;
@@ -556,6 +645,7 @@ function finish(early){
   const n=W.length, ok=st.filter(s=>s==="ok").length, bad=st.filter(s=>s==="miss"||s==="wrong").length,
         help=st.filter(s=>s==="help").length, unread=st.filter(s=>!s).length;
   const pct = Math.round(ok/n*100);
+  if(ok>0) logPractice();
   const key=`mh:best:${mode}:${P.id}`; const best=store.get(key,null);
   if(best==null || pct>best) store.set(key,pct);
   const msg = pct>=95?"Mumtaz! Hafazan sangat lancar 🌟":pct>=80?"Bagus! Sedikit lagi untuk sempurna 👍":pct>=50?"Teruskan usaha. Ulang ayat bertanda merah 💪":"Jangan putus asa. Dengar dahulu bacaan, kemudian cuba lagi 🤲";
