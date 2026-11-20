@@ -7,6 +7,12 @@ Nombor versi: `MAJOR.MINOR.PATCH`
 
 Nombor versi disimpan dalam `version.js` dan dipaparkan di bahagian bawah halaman utama.
 
+## 1.3.0 — 20 Nov 2026
+- **Baharu: menu bawah** dengan 4 bahagian: 📖 Tilawah · 🧠 Hafazan · 💡 Tips Hafazan · 📜 Tajwid
+- **Tips Hafazan**: 15 tips menghafaz yang berkesan (dengar dahulu, teknik 10+10, rangkai ayat, ulang kaji berjarak, uji diri, ayat serupa, dll.)
+- **Hukum Tajwid**: 8 bahagian, 23 hukum (nun mati & tanwin, mim mati, ghunnah, mad, qalqalah, alif lam, lam jalalah, ra), setiap satu dengan contoh daripada ayat UTQH dan butang ▶ bacaan Al-Husary
+- Pilihan Tingkatan 4/5 kini hanya dipaparkan dalam Tilawah dan Hafazan
+
 ## 1.2.1 — 20 Nov 2026
 - Kotak teguran "AI dengar" tidak lagi muncul secara automatik semasa membaca (supaya bacaan tidak terganggu). Ia masih dipaparkan apabila perkataan merah ditekan dan dalam ringkasan akhir.
 

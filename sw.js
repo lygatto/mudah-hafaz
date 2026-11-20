@@ -1,4 +1,4 @@
-importScripts("version.js");const C="mh-"+self.APP_VERSION;const SHELL=["./","index.html","version.js","data.js","manifest.json","icon.svg","icon-192.png","icon-512.png"];
+importScripts("version.js");const C="mh-"+self.APP_VERSION;const SHELL=["./","index.html","version.js","data.js","content.js","manifest.json","icon.svg","icon-192.png","icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(SHELL)));self.skipWaiting();});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim();});
 self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(e.request.method!=="GET")return;

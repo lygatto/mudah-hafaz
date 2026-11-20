@@ -153,6 +153,39 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .cor .r b{font-family:"Amiri Quran",serif;font-weight:400;font-size:20px;line-height:1.6}
 .cor .r .bad{color:var(--bad)} .cor .r .good{color:var(--ok)}
 .cor .r .play{margin-left:auto;padding:5px 10px}
+#home{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;justify-content:center;gap:2px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.nav button{flex:1;max-width:170px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-size:11px;font-weight:600;color:var(--muted)}
+.nav button span{font-size:20px;line-height:1.2;filter:grayscale(1);opacity:.6;transition:.2s}
+.nav button.on{color:var(--emerald);background:var(--emerald-soft)}
+.nav button.on span{filter:none;opacity:1}
+.phead{margin:6px 0 14px}
+.phead h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.phead p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.tips{display:grid;gap:10px;padding-bottom:20px}
+.tip{display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.tip .ic{width:40px;height:40px;flex:none;border-radius:12px;background:var(--gold-soft);display:grid;place-items:center;font-size:20px}
+.tip b{display:block;font-size:15px;margin-bottom:3px}
+.tip p{margin:0;font-size:13px;line-height:1.55;color:var(--muted)}
+.tip .no{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:.05em}
+.tsec{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:10px;overflow:hidden}
+.tsec>button{width:100%;display:flex;align-items:center;gap:10px;padding:15px 16px;text-align:left;font-weight:700;font-size:15px}
+.tsec>button .c{margin-left:auto;font-size:11px;font-weight:700;color:var(--emerald);background:var(--emerald-soft);padding:3px 8px;border-radius:99px}
+.tsec>button .chev{transition:transform .2s;color:var(--muted)}
+.tsec.open>button .chev{transform:rotate(90deg)}
+.tsec .body{display:none;padding:0 14px 14px}
+.tsec.open .body{display:block}
+.tsec .intro{font-size:12.5px;color:var(--muted);margin:0 2px 10px}
+.rule{border-top:1px solid var(--line);padding:12px 2px}
+.rule:first-of-type{border-top:0;padding-top:2px}
+.rule .rn{font-weight:700;font-size:14.5px;color:var(--emerald)}
+.rule .rd{font-size:13px;line-height:1.5;margin:3px 0 6px}
+.rule .rh{font-size:12px;color:var(--muted);line-height:1.4}
+.rule .rh b{font-family:"Amiri Quran",serif;font-weight:400;font-size:19px;line-height:1;color:var(--gold);direction:rtl;unicode-bidi:isolate}
+.ex{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:12px;padding:6px 10px 6px 12px;margin-top:6px}
+.ex .ar{flex:1;font-family:"Amiri Quran",serif;font-size:24px;line-height:1.7;direction:rtl;text-align:right}
+.ex .ref{font-size:11px;color:var(--muted);font-weight:600;max-width:110px;line-height:1.3}
+.ex .play{padding:7px 10px}
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;z-index:30;box-shadow:var(--shadow);max-width:90vw}
 .ver{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;background:var(--surface2);font-weight:600}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:6px 0 30px;line-height:1.6}
@@ -168,22 +201,34 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
       <div class="brand"><h1>Mudah Hafaz</h1><p>Latihan UTQH SPM</p></div>
       <button class="icon-btn" id="themeBtn" aria-label="Tukar tema"></button>
     </div>
+    <div id="listView">
     <div class="hero">
       <div class="ar">وَلَقَدْ يَسَّرْنَا ٱلْقُرْءَانَ لِلذِّكْرِ</div>
       <div class="t">"Dan sesungguhnya Kami telah mudahkan Al-Quran untuk peringatan" (Al-Qamar: 17)</div>
     </div>
-    <div class="row"><div class="seg" id="modeSeg">
-      <button data-v="hafazan" class="on">🧠 Hafazan</button>
-      <button data-v="tilawah">📖 Tilawah</button>
-    </div></div>
     <div class="row"><div class="seg" id="tSeg">
       <button data-v="4" class="on">Tingkatan 4</button>
       <button data-v="5">Tingkatan 5</button>
     </div></div>
     <p class="hint" id="modeHint"></p>
     <div class="cards" id="cards"></div>
+    </div>
+    <div id="tipsView" class="hidden">
+      <div class="phead"><h2>💡 Tips Hafazan</h2><p>Teknik menghafaz yang berkesan untuk persediaan UTQH.</p></div>
+      <div class="tips" id="tips"></div>
+    </div>
+    <div id="tajView" class="hidden">
+      <div class="phead"><h2>📜 Hukum Tajwid</h2><p>Hukum tajwid penting dengan contoh daripada ayat-ayat UTQH. Tekan ▶ untuk mendengar ayat (Al-Husary).</p></div>
+      <div id="taj"></div>
+    </div>
     <div class="foot">Alat latihan kendiri. Semakan suara hanya pada peringkat perkataan.<br>Tajwid tetap dinilai oleh guru. Audio: Mahmoud Khalil Al-Husary.<br><span class="ver" id="ver"></span></div>
   </div>
+  <nav class="nav" id="nav">
+    <button data-v="tilawah"><span>📖</span>Tilawah</button>
+    <button data-v="hafazan"><span>🧠</span>Hafazan</button>
+    <button data-v="tips"><span>💡</span>Tips Hafazan</button>
+    <button data-v="tajwid"><span>📜</span>Tajwid</button>
+  </nav>
 </section>
 
 <!-- PRACTICE -->
@@ -219,6 +264,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 <script src="version.js"></script>
 <script src="data.js"></script>
+<script src="content.js"></script>
 <script>
 (() => {
 const $ = s => document.querySelector(s);
@@ -241,14 +287,38 @@ applyTheme(store.get("mh:theme", null));
 $("#themeBtn").onclick = () => { const t = isDark()?"light":"dark"; store.set("mh:theme", t); applyTheme(t); };
 
 /* ---------- home ---------- */
-let mode = store.get("mh:mode","hafazan"), ting = store.get("mh:ting","4");
+let tab = store.get("mh:tab", store.get("mh:mode","hafazan")), ting = store.get("mh:ting","4");
+let mode = (tab==="tips"||tab==="tajwid") ? store.get("mh:mode","hafazan") : tab;
 const HINTS = {
   hafazan: "Ayat disorok. Baca dari ingatan dan perkataan akan muncul apabila dibaca dengan betul.",
   tilawah: "Ayat dipaparkan. Baca sambil melihat dan app akan menyemak setiap perkataan."
 };
 function setSeg(seg, v){ seg.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.v===v)); }
+function renderTips(){
+  $("#tips").innerHTML = TIPS.map((t,i)=>`<div class="tip"><div class="ic">${t.i}</div><div><div class="no">TIP ${i+1}</div><b>${t.t}</b><p>${t.d}</p></div></div>`).join("");
+}
+function renderTajwid(){
+  const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+  const open = store.get("mh:tajopen", [0]);
+  $("#taj").innerHTML = TAJWID.map((sec,si)=>`<div class="tsec${open.includes(si)?" open":""}" data-si="${si}">
+    <button><span>${sec.sec}</span><span class="c">${sec.rules.length} hukum</span><span class="chev">›</span></button>
+    <div class="body">${sec.intro?`<p class="intro">${sec.intro}</p>`:""}${sec.rules.map(r=>`<div class="rule">
+      <div class="rn">${r.n}</div><div class="rd">${r.d}</div><div class="rh">Huruf: <b>${r.h}</b></div>
+      ${r.ex.map(e=>`<div class="ex"><button class="play" data-s="${e.s}" data-a="${e.a}" aria-label="Dengar">${PLAY}</button><span class="ref">${e.r}</span><div class="ar">${e.t}</div></div>`).join("")}
+    </div>`).join("")}</div></div>`).join("");
+  $("#taj").querySelectorAll(".tsec>button").forEach(b=>b.onclick=()=>{ const el=b.parentElement; el.classList.toggle("open");
+    store.set("mh:tajopen", [...$("#taj").querySelectorAll(".tsec.open")].map(x=>+x.dataset.si)); });
+  $("#taj").querySelectorAll(".ex .play").forEach(b=>b.onclick=()=>play(ayahUrl(+b.dataset.s,+b.dataset.a), b));
+}
 function renderHome(){
-  setSeg($("#modeSeg"), mode); setSeg($("#tSeg"), ting);
+  setSeg($("#nav"), tab);
+  const isList = tab==="hafazan"||tab==="tilawah";
+  $("#listView").classList.toggle("hidden", !isList);
+  $("#tipsView").classList.toggle("hidden", tab!=="tips");
+  $("#tajView").classList.toggle("hidden", tab!=="tajwid");
+  if(tab==="tips"){ if(!$("#tips").children.length) renderTips(); return; }
+  if(tab==="tajwid"){ if(!$("#taj").children.length) renderTajwid(); return; }
+  mode = tab; setSeg($("#tSeg"), ting);
   $("#modeHint").textContent = HINTS[mode];
   const list = QDATA[mode][ting];
   $("#cards").innerHTML = list.map((p,i) => {
@@ -263,7 +333,7 @@ function renderHome(){
   }).join("");
   $("#cards").querySelectorAll(".card").forEach(c => c.onclick = () => openPassage(list[+c.dataset.i]));
 }
-$("#modeSeg").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(v){mode=v;store.set("mh:mode",v);renderHome();} };
+$("#nav").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(!v||v===tab) return; stopAudio(); tab=v; store.set("mh:tab",v); if(v==="hafazan"||v==="tilawah") store.set("mh:mode",v); renderHome(); scrollTo(0,0); };
 $("#tSeg").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(v){ting=v;store.set("mh:ting",v);renderHome();} };
 
 /* ---------- arabic normalisation & matching ---------- */
