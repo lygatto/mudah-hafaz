@@ -142,6 +142,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:11.5px;color:var(--muted);margin:4px 0 0}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;z-index:30;box-shadow:var(--shadow);max-width:90vw}
+.ver{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;background:var(--surface2);font-weight:600}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:6px 0 30px;line-height:1.6}
 </style>
 </head>
@@ -169,7 +170,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
     </div></div>
     <p class="hint" id="modeHint"></p>
     <div class="cards" id="cards"></div>
-    <div class="foot">Alat latihan kendiri. Semakan suara hanya pada peringkat perkataan.<br>Tajwid tetap dinilai oleh guru. Audio: Mahmoud Khalil Al-Husary.</div>
+    <div class="foot">Alat latihan kendiri. Semakan suara hanya pada peringkat perkataan.<br>Tajwid tetap dinilai oleh guru. Audio: Mahmoud Khalil Al-Husary.<br><span class="ver" id="ver"></span></div>
   </div>
 </section>
 
@@ -203,6 +204,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
 <div id="sheetHost"></div>
 
+<script src="version.js"></script>
 <script src="data.js"></script>
 <script>
 (() => {
@@ -457,7 +459,11 @@ let tt; function toast(m){ let t=$(".toast"); if(!t){ t=document.createElement("
   t.textContent=m; t.style.display="block"; clearTimeout(tt); tt=setTimeout(()=>t.style.display="none",3200); }
 
 setMicUI(); renderHome();
-if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+$("#ver").textContent = `Versi ${APP_VERSION} · ${APP_DATE}`;
+const seen = store.get("mh:ver", null);
+if(seen && seen!==APP_VERSION) setTimeout(()=>toast(`✨ App dikemas kini ke versi ${APP_VERSION}`), 600);
+store.set("mh:ver", APP_VERSION);
+if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js?v="+APP_VERSION).catch(()=>{});
 window.__mh = { hear, get st(){return st}, get pos(){return pos}, openPassage, finish };
 })();
 </script>
