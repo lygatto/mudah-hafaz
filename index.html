@@ -185,7 +185,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .ex{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:12px;padding:6px 10px 6px 12px;margin-top:6px}
 .ex .ar{flex:1;font-family:"Amiri Quran",serif;font-size:24px;line-height:1.7;direction:rtl;text-align:right}
 .ex .ref{font-size:11px;color:var(--muted);font-weight:600;max-width:110px;line-height:1.3}
-.ex .play{padding:7px 10px}
+.tbtn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:99px;background:var(--emerald);color:#fff;font-size:12.5px;font-weight:700;flex:none;min-width:84px;justify-content:center}
+.tbtn svg{width:14px;height:14px}
+.tbtn.on{background:var(--bad)}
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;z-index:30;box-shadow:var(--shadow);max-width:90vw}
 .ver{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;background:var(--surface2);font-weight:600}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:6px 0 30px;line-height:1.6}
@@ -218,7 +220,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
       <div class="tips" id="tips"></div>
     </div>
     <div id="tajView" class="hidden">
-      <div class="phead"><h2>📜 Hukum Tajwid</h2><p>Hukum tajwid penting dengan contoh daripada ayat-ayat UTQH. Tekan ▶ untuk mendengar ayat (Al-Husary).</p></div>
+      <div class="phead"><h2>📜 Hukum Tajwid</h2><p>Hukum tajwid penting dengan contoh daripada ayat-ayat UTQH. Tekan <b>Mula</b> untuk mendengar perkataan yang berlaku hukum tajwid sahaja (bacaan Al-Husary), dan <b>Henti</b> untuk berhenti.</p></div>
       <div id="taj"></div>
     </div>
     <div class="foot">Alat latihan kendiri. Semakan suara hanya pada peringkat perkataan.<br>Tajwid tetap dinilai oleh guru. Audio: Mahmoud Khalil Al-Husary.<br><span class="ver" id="ver"></span></div>
@@ -297,6 +299,27 @@ function setSeg(seg, v){ seg.querySelectorAll("button").forEach(b => b.classList
 function renderTips(){
   $("#tips").innerHTML = TIPS.map((t,i)=>`<div class="tip"><div class="ic">${t.i}</div><div><div class="no">TIP ${i+1}</div><b>${t.t}</b><p>${t.d}</p></div></div>`).join("");
 }
+/* tajwid: play only the example words, cut from Al-Husary's ayah recitation */
+const TPLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+const TSTOP='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+const tajAudio = new Audio(); tajAudio.preload="none";
+let tajBtn=null, tajTimer=null, tajEnd=0;
+function tajUI(b, on){ if(!b) return; b.classList.toggle("on", on); b.innerHTML = (on?TSTOP:TPLAY)+`<span>${on?"Henti":"Mula"}</span>`; b.setAttribute("aria-label", on?"Henti":"Mula"); }
+function tajStop(){ clearInterval(tajTimer); tajTimer=null; tajAudio.pause(); tajUI(tajBtn,false); tajBtn=null; }
+function tajPlay(b){
+  const seg = (window.TAJ_AUDIO||{})[b.dataset.k]; if(!seg){ toast("Audio contoh ini tiada."); return; }
+  tajStop(); if(typeof stopAudio==="function") stopAudio();
+  tajBtn=b; tajUI(b,true);
+  const t0=seg.t0/1000, t1=seg.t1/1000 + 0.12; tajEnd=t1;
+  const go = () => { try{ tajAudio.currentTime=t0; }catch(_){}
+    tajAudio.play().catch(()=>{ toast("Audio gagal dimainkan. Semak sambungan internet."); tajStop(); });
+    tajTimer=setInterval(()=>{ if(tajAudio.currentTime>=tajEnd || tajAudio.ended) tajStop(); }, 25); };
+  if(tajAudio.dataset.src===seg.u && tajAudio.readyState>=1){ go(); }
+  else { tajAudio.dataset.src=seg.u; tajAudio.src=seg.u+"#t="+t0+","+t1; tajAudio.preload="auto";
+    tajAudio.onloadedmetadata=()=>{ tajAudio.onloadedmetadata=null; if(tajBtn===b) go(); };
+    tajAudio.load(); }
+}
+tajAudio.onerror=()=>{ if(tajBtn){ toast("Audio gagal dimuatkan. Semak sambungan internet."); tajStop(); } };
 function renderTajwid(){
   const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
   const open = store.get("mh:tajopen", [0]);
@@ -304,11 +327,11 @@ function renderTajwid(){
     <button><span>${sec.sec}</span><span class="c">${sec.rules.length} hukum</span><span class="chev">›</span></button>
     <div class="body">${sec.intro?`<p class="intro">${sec.intro}</p>`:""}${sec.rules.map(r=>`<div class="rule">
       <div class="rn">${r.n}</div><div class="rd">${r.d}</div><div class="rh">Huruf: <b>${r.h}</b></div>
-      ${r.ex.map(e=>`<div class="ex"><button class="play" data-s="${e.s}" data-a="${e.a}" aria-label="Dengar">${PLAY}</button><span class="ref">${e.r}</span><div class="ar">${e.t}</div></div>`).join("")}
+      ${r.ex.map(e=>`<div class="ex"><button class="tbtn" data-k="${esc(e.s+":"+e.a+":"+e.t)}" aria-label="Mula">${TPLAY}<span>Mula</span></button><span class="ref">${e.r}</span><div class="ar">${e.t}</div></div>`).join("")}
     </div>`).join("")}</div></div>`).join("");
   $("#taj").querySelectorAll(".tsec>button").forEach(b=>b.onclick=()=>{ const el=b.parentElement; el.classList.toggle("open");
     store.set("mh:tajopen", [...$("#taj").querySelectorAll(".tsec.open")].map(x=>+x.dataset.si)); });
-  $("#taj").querySelectorAll(".ex .play").forEach(b=>b.onclick=()=>play(ayahUrl(+b.dataset.s,+b.dataset.a), b));
+  $("#taj").querySelectorAll(".tbtn").forEach(b=>b.onclick=()=> tajBtn===b ? tajStop() : tajPlay(b));
 }
 function renderHome(){
   setSeg($("#nav"), tab);
@@ -333,7 +356,7 @@ function renderHome(){
   }).join("");
   $("#cards").querySelectorAll(".card").forEach(c => c.onclick = () => openPassage(list[+c.dataset.i]));
 }
-$("#nav").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(!v||v===tab) return; stopAudio(); tab=v; store.set("mh:tab",v); if(v==="hafazan"||v==="tilawah") store.set("mh:mode",v); renderHome(); scrollTo(0,0); };
+$("#nav").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(!v||v===tab) return; stopAudio(); tajStop(); tab=v; store.set("mh:tab",v); if(v==="hafazan"||v==="tilawah") store.set("mh:mode",v); renderHome(); scrollTo(0,0); };
 $("#tSeg").onclick = e => { const v=e.target.closest("button")?.dataset.v; if(v){ting=v;store.set("mh:ting",v);renderHome();} };
 
 /* ---------- arabic normalisation & matching ---------- */
@@ -572,7 +595,7 @@ const seen = store.get("mh:ver", null);
 if(seen && seen!==APP_VERSION) setTimeout(()=>toast(`✨ App dikemas kini ke versi ${APP_VERSION}`), 600);
 store.set("mh:ver", APP_VERSION);
 if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js?v="+APP_VERSION).catch(()=>{});
-window.__mh = { get heardAt(){return heardAt}, hear, get st(){return st}, get pos(){return pos}, openPassage, finish };
+window.__mh = { tajAudio, get heardAt(){return heardAt}, hear, get st(){return st}, get pos(){return pos}, openPassage, finish };
 })();
 </script>
 </body>

@@ -7,6 +7,11 @@ Nombor versi: `MAJOR.MINOR.PATCH`
 
 Nombor versi disimpan dalam `version.js` dan dipaparkan di bahagian bawah halaman utama.
 
+## 1.4.0 — 20 Nov 2026
+- **Tajwid: butang Mula / Henti** bagi setiap contoh
+- Hanya **perkataan yang berlaku hukum tajwid** dimainkan, bukan satu ayat penuh. Audio dipotong daripada bacaan ayat Al-Husary menggunakan masa setiap perkataan, jadi hukum antara dua perkataan (idgham, iqlab, ikhfa') kekal kedengaran
+- Audio tajwid berhenti apabila bertukar menu
+
 ## 1.3.0 — 20 Nov 2026
 - **Baharu: menu bawah** dengan 4 bahagian: 📖 Tilawah · 🧠 Hafazan · 💡 Tips Hafazan · 📜 Tajwid
 - **Tips Hafazan**: 15 tips menghafaz yang berkesan (dengar dahulu, teknik 10+10, rangkai ayat, ulang kaji berjarak, uji diri, ayat serupa, dll.)
