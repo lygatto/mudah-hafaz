@@ -141,6 +141,18 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .warn{background:var(--gold-soft);color:var(--text);border-color:transparent}
 .legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:11.5px;color:var(--muted);margin:4px 0 0}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.fix{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:14px;padding:9px 12px;margin:0 auto 10px;max-width:520px;box-shadow:var(--shadow);font-size:12.5px;animation:up .25s}
+.fix .col{flex:1;min-width:0}
+.fix .k{color:var(--muted);font-size:11px;font-weight:600}
+.fix .v{font-family:"Amiri Quran",serif;font-size:22px;line-height:1.7;direction:rtl;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fix .v.bad{color:var(--bad)} .fix .v.good{color:var(--ok)}
+.fix .arr{color:var(--muted);font-size:18px}
+.fix .x{color:var(--muted);font-size:18px;padding:4px}
+.cor{display:flex;flex-direction:column;gap:6px;margin-top:6px;padding-top:8px;border-top:1px dashed var(--line)}
+.cor .r{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.cor .r b{font-family:"Amiri Quran",serif;font-weight:400;font-size:20px;line-height:1.6}
+.cor .r .bad{color:var(--bad)} .cor .r .good{color:var(--ok)}
+.cor .r .play{margin-left:auto;padding:5px 10px}
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;z-index:30;box-shadow:var(--shadow);max-width:90vw}
 .ver{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:99px;background:var(--surface2);font-weight:600}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:6px 0 30px;line-height:1.6}
@@ -193,6 +205,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   </div>
   <div class="dock"><div class="in">
     <div class="wave hidden" id="wave"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="fix hidden" id="fix"></div>
     <div class="live ltr" id="live">Tekan 🎤 dan mula membaca</div>
     <div class="ctrl">
       <div class="lbl"><button class="side" id="resetBtn" aria-label="Ulang semula"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>Ulang</div>
@@ -297,7 +310,7 @@ function openPassage(p){
     $("#noMic").innerHTML = "🎤 Pelayar ini tidak menyokong semakan suara. Gunakan <b>Google Chrome</b> (Android atau komputer). Anda masih boleh berlatih dengan butang <b>Bantu</b> untuk membuka perkataan satu demi satu."; }
 }
 function reset(){
-  stopMic(); st = W.map(()=> ""); pos=0; buf=[]; started=false;
+  stopMic(); st = W.map(()=> ""); pos=0; buf=[]; heardAt={}; started=false; hideFix();
   renderAyat(); setLive("Tekan 🎤 dan mula membaca", true);
 }
 function renderAyat(){
@@ -328,7 +341,9 @@ function mark(i, s){
 }
 function advance(to){ const old=pos; pos=to; moveCursor(old); if(pos>=W.length) finish(); }
 
-let buf=[]; // unmatched heard words since last confirmed match
+let buf=[];   // unmatched heard words since last confirmed match: {h:normalised, r:raw}
+let heardAt={}; // index -> what the AI heard in place of that word
+function setHeard(i, raw){ heardAt[i]=raw; showFix(i); }
 function hear(raw){
   const h = norm(raw); if(!h || pos>=W.length) return;
   if(similar(h, W[pos].n)){ mark(pos,"ok"); buf=[]; advance(pos+1); return; }
@@ -339,20 +354,37 @@ function hear(raw){
   if(h.length>=3) for(let k=1;k<=maxK;k++){
     if(k>3 && h.length<4) break;
     if(similar(h, W[pos+k].n)){
-      const pool=[...buf], res=[];
+      const pool=[...buf], res=[], said={};
       for(let j=pos;j<pos+k;j++){
-        const hit = pool.findIndex(b=>similar(b, W[j].n));
+        const hit = pool.findIndex(b=>similar(b.h, W[j].n));
         if(hit>=0){ pool.splice(hit,1); res.push("ok"); } else res.push("miss");
       }
       // leftover heard words = something was said in place of a missing word -> "wrong"
-      for(let r=0;r<res.length && pool.length;r++) if(res[r]==="miss"){ res[r]="wrong"; pool.pop(); }
-      res.forEach((v,r)=>mark(pos+r, v));
+      for(let r=0;r<res.length && pool.length;r++) if(res[r]==="miss"){ res[r]="wrong"; said[r]=pool.shift().r; }
+      if(pool.length){ const r=res.lastIndexOf("wrong"); if(r>=0) said[r]+=" "+pool.map(b=>b.r).join(" "); }
+      res.forEach((v,r)=>{ mark(pos+r, v); if(v==="wrong") setHeard(pos+r, said[r]); });
       mark(pos+k,"ok"); buf=[]; advance(pos+k+1); return;
     }
   }
-  buf.push(h);
-  if(buf.length>=3){ mark(pos,"wrong"); buf=[]; advance(pos+1); }
+  buf.push({h, r:raw});
+  if(buf.length>=3){ mark(pos,"wrong"); setHeard(pos, buf.map(b=>b.r).join(" ")); buf=[]; advance(pos+1); }
 }
+
+const esc = t => String(t||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let fixT;
+function fixHTML(i){
+  const heard = heardAt[i];
+  if(st[i]==="wrong" && heard) return `<div class="col"><div class="k">🎧 AI dengar</div><div class="v bad">${esc(heard)}</div></div><div class="arr">→</div><div class="col"><div class="k">✅ Sepatutnya</div><div class="v good">${W[i].u}</div></div>`;
+  if(st[i]==="miss") return `<div class="col"><div class="k">🎧 AI dengar</div><div class="v bad" style="font-family:inherit;font-size:13px">(tidak didengar / tertinggal)</div></div><div class="arr">→</div><div class="col"><div class="k">✅ Sepatutnya</div><div class="v good">${W[i].u}</div></div>`;
+  return "";
+}
+function showFix(i, sticky){
+  const h=fixHTML(i); if(!h) return;
+  const f=$("#fix"); f.innerHTML = h + `<button class="x" aria-label="Tutup">×</button>`; f.classList.remove("hidden");
+  f.querySelector(".x").onclick = hideFix;
+  clearTimeout(fixT); fixT=setTimeout(hideFix, sticky?7000:4500);
+}
+function hideFix(){ const f=$("#fix"); if(f) f.classList.add("hidden"); }
 
 /* ---------- speech recognition ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -421,7 +453,7 @@ $("#ayat").onclick = e => {
   const w = e.target.closest(".w"), an = e.target.closest(".an");
   if(w){ const i=+w.dataset.i;
     if(hiddenMode && !st[i]){ toast("Perkataan ini masih disorok. Gunakan 💡 Bantu untuk membukanya."); return; }
-    play(AUD_W + W[i].au, w); }
+    play(AUD_W + W[i].au, w); showFix(i, true); }
   else if(an){ play(ayahUrl(P.s, +an.dataset.a), an); }
 };
 
@@ -439,17 +471,23 @@ function finish(early){
   const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
   const rev = errAyat.map(x => `<div class="rev"><div class="h"><span>Ayat ${x.a.a}</span>
       <button class="play" data-a="${x.a.a}">${PLAY} Dengar Husary</button></div>
-      <div class="ayat">${x.idx.map(i=>`<span class="w ${st[i]||"miss"}" data-i="${i}">${W[i].u}</span>`).join(" ")}</div></div>`).join("");
+      <div class="ayat">${x.idx.map(i=>`<span class="w ${st[i]||"miss"}" data-i="${i}">${W[i].u}</span>`).join(" ")}</div>
+      ${(()=>{ const bad=x.idx.filter(i=>st[i]==="wrong"||st[i]==="miss"); if(!bad.length) return "";
+        return `<div class="cor">${bad.map(i=>`<div class="r">${st[i]==="wrong"&&heardAt[i]
+          ? `<span>Anda baca</span><b class="bad">${esc(heardAt[i])}</b><span>→</span><b class="good">${W[i].u}</b>`
+          : `<span>Tertinggal</span><b class="good">${W[i].u}</b>`}
+          <button class="play pw" data-i="${i}">${PLAY}</button></div>`).join("")}</div>`; })()}</div>`).join("");
   $("#sheetHost").innerHTML = `<div class="scrim"><div class="sheet">
     <div class="score"><div class="big">${pct}%</div><p>${msg}</p></div>
     <div class="stats"><div class="stat g"><b>${ok}/${n}</b><span>Betul</span></div>
       <div class="stat r"><b>${bad+(early?unread:0)}</b><span>${early&&unread?"Salah / belum":"Salah / tertinggal"}</span></div>
       <div class="stat y"><b>${help}</b><span>Bantuan</span></div></div>
-    ${errAyat.length?`<p class="hint">Ayat yang perlu diulang. Tekan perkataan untuk mendengar sebutan:</p>${rev}`:`<div class="note">✨ Semua ayat dibaca tanpa kesilapan perkataan. Minta guru menyemak tajwid anda.</div>`}
+    ${errAyat.length?`<p class="hint">Ayat yang perlu diulang. "Anda baca" ialah perkataan yang didengar oleh AI. Tekan ▶ untuk mendengar sebutan yang betul:</p>${rev}`:`<div class="note">✨ Semua ayat dibaca tanpa kesilapan perkataan. Minta guru menyemak tajwid anda.</div>`}
     <div class="btns"><button class="btn" id="sClose">Tutup</button><button class="btn pri" id="sAgain">Cuba lagi</button></div>
   </div></div>`;
   const sh=$("#sheetHost");
-  sh.querySelectorAll(".play").forEach(b=>b.onclick=()=>play(ayahUrl(P.s,+b.dataset.a), b));
+  sh.querySelectorAll(".play:not(.pw)").forEach(b=>b.onclick=()=>play(ayahUrl(P.s,+b.dataset.a), b));
+  sh.querySelectorAll(".play.pw").forEach(b=>b.onclick=()=>play(AUD_W+W[+b.dataset.i].au, b));
   sh.querySelectorAll(".rev .w").forEach(w=>w.onclick=()=>play(AUD_W+W[+w.dataset.i].au, w));
   $("#sClose").onclick=()=>{ stopAudio(); sh.innerHTML=""; };
   $("#sAgain").onclick=()=>{ stopAudio(); sh.innerHTML=""; reset(); };
@@ -464,7 +502,7 @@ const seen = store.get("mh:ver", null);
 if(seen && seen!==APP_VERSION) setTimeout(()=>toast(`✨ App dikemas kini ke versi ${APP_VERSION}`), 600);
 store.set("mh:ver", APP_VERSION);
 if("serviceWorker" in navigator && location.protocol==="https:") navigator.serviceWorker.register("sw.js?v="+APP_VERSION).catch(()=>{});
-window.__mh = { hear, get st(){return st}, get pos(){return pos}, openPassage, finish };
+window.__mh = { get heardAt(){return heardAt}, hear, get st(){return st}, get pos(){return pos}, openPassage, finish };
 })();
 </script>
 </body>

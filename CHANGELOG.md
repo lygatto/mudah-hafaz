@@ -7,6 +7,14 @@ Nombor versi: `MAJOR.MINOR.PATCH`
 
 Nombor versi disimpan dalam `version.js` dan dipaparkan di bahagian bawah halaman utama.
 
+## 1.2.0 — 20 Nov 2026
+- **Baharu: "AI dengar"**: app memaparkan perkataan yang didengar oleh AI berbanding perkataan yang sepatutnya
+  - Semasa membaca: kotak teguran muncul di atas butang mikrofon setiap kali ada kesilapan
+  - Tekan perkataan merah untuk melihat semula apa yang didengar dan mendengar sebutan yang betul
+  - Ringkasan akhir: senarai "Anda baca → Sepatutnya" bagi setiap kesilapan, dengan butang ▶ sebutan
+- Perkataan tertinggal ditanda "(tidak didengar / tertinggal)"
+- Audio bacaan (per perkataan & Al-Husary) dikekalkan
+
 ## 1.1.0 — 20 Nov 2026
 - Nombor versi dipaparkan dalam app
 - Murid dimaklumkan apabila app dikemas kini ke versi baharu
