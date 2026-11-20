@@ -343,7 +343,7 @@ function advance(to){ const old=pos; pos=to; moveCursor(old); if(pos>=W.length) 
 
 let buf=[];   // unmatched heard words since last confirmed match: {h:normalised, r:raw}
 let heardAt={}; // index -> what the AI heard in place of that word
-function setHeard(i, raw){ heardAt[i]=raw; showFix(i); }
+function setHeard(i, raw){ heardAt[i]=raw; }
 function hear(raw){
   const h = norm(raw); if(!h || pos>=W.length) return;
   if(similar(h, W[pos].n)){ mark(pos,"ok"); buf=[]; advance(pos+1); return; }
